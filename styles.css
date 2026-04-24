@@ -1,6 +1,6 @@
 :root{
   --negro:#0D0D0D;--negro2:#1A1A1A;--dorado:#C9A96E;--dorado2:#E8C98A;
-  --dorado3:#A00840;--crema:#F5F0E8;--crema2:#EDE7D9;--blanco:#FAFAF8;
+  --dorado3:#A07840;--crema:#F5F0E8;--crema2:#EDE7D9;--blanco:#FAFAF8;
   --gris:#888880;--font-d:'Cormorant Garamond',Georgia,serif;
   --font-b:'Jost',sans-serif;--ease:cubic-bezier(0.16,1,0.3,1);
   --sp:clamp(5rem,10vw,9rem);--mw:1200px;
