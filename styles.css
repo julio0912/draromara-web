@@ -555,3 +555,8 @@ footer{background:#080808;padding:3.5rem 0 2rem;border-top:1px solid rgba(201,16
   .wa-btn svg{width:18px;height:18px}
   .wa-txt{font-size:.7rem;letter-spacing:.06em}
 }
+
+/* ── Servicios destacados ── */
+.srv-row--dest{border-left:3px solid var(--dorado)}
+.srv-row-dest-badge{font-size:.7rem;color:var(--dorado);flex-shrink:0;margin-right:-.4rem}
+
