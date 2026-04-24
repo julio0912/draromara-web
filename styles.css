@@ -370,16 +370,14 @@ nav.scrolled{padding:1rem clamp(1.2rem,5vw,4rem);
 .sp-l{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
   color:rgba(13,13,13,.65);margin-top:.3rem;display:block}
 .sp-div{width:1px;height:50px;background:rgba(13,13,13,.15)}
-/* Mobile: 2x2 grid, más compacto */
+/* Mobile: fila horizontal compacta, todo en una línea */
 @media(max-width:600px){
-  .sp-div{display:none}
-  .sp-counters{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:2rem 1rem;
-    padding:0 1.5rem
-  }
-  .sp-count{padding:.5rem;background:rgba(0,0,0,.08);border-radius:2px}
+  #social-proof{padding:1.2rem 0}
+  .sp-counters{gap:0;flex-wrap:nowrap;justify-content:space-around;padding:0 .5rem}
+  .sp-div{display:block;height:24px;width:1px;background:rgba(13,13,13,.2)}
+  .sp-count{padding:.1rem .3rem}
+  .sp-n{font-size:1.25rem}
+  .sp-l{font-size:.46rem;letter-spacing:.06em;margin-top:.1rem}
 }
 
 /* ══════════════════════════════════════════════════════
@@ -489,8 +487,6 @@ nav.scrolled{padding:1rem clamp(1.2rem,5vw,4rem);
 @media(max-width:600px){
   .cta-act .btn-p,.cta-act .btn-xl{width:100%;justify-content:center}
   .cta-ci{gap:2rem}
-  /* Agregar padding inferior para que no tape la barra WA */
-  #cta-final{padding-bottom:calc(var(--sp) + var(--wa-bar-h))}
 }
 
 /* ══════════════════════════════════════════════════════
@@ -513,9 +509,8 @@ footer{background:#080808;padding:3.5rem 0 2rem;border-top:1px solid rgba(201,16
   padding-top:2rem;border-top:1px solid rgba(201,169,110,.08)}
 .ft-copy{font-size:.7rem;color:rgba(245,240,232,.25)}
 .ft-made{font-size:.67rem;color:rgba(245,240,232,.2)}
-/* Footer mobile: padding extra para barra WA */
+/* Footer mobile */
 @media(max-width:600px){
-  footer{padding-bottom:calc(2rem + var(--wa-bar-h))}
   .ft-inner{flex-direction:column;gap:1.5rem}
   .ft-cta-wrap{width:100%}
   .ft-cta-wrap .btn-p{width:100%;justify-content:center}
@@ -538,24 +533,25 @@ footer{background:#080808;padding:3.5rem 0 2rem;border-top:1px solid rgba(201,16
   50%{box-shadow:0 8px 40px rgba(37,211,102,.5),0 0 0 8px rgba(37,211,102,.08)}
 }
 
-/* Mobile: barra fija ancho completo */
+/* Mobile: píldora flotante centrada — no invasiva */
 @media(max-width:600px){
   .wa-float{
-    bottom:0;right:0;left:0;
-    width:100%;
-    border-radius:0
+    bottom:1.2rem;
+    left:50%;
+    right:auto;
+    transform:translateX(-50%);
+    width:auto
   }
   .wa-btn{
-    width:100%;
-    height:var(--wa-bar-h);
-    justify-content:center;
-    padding:0 1.5rem;
-    border-radius:0;
-    gap:1rem;
-    font-size:.8rem;
-    box-shadow:0 -4px 20px rgba(37,211,102,.2);
-    animation:none /* sin pulso en barra */
+    height:auto;
+    padding:.75rem 1.6rem;
+    border-radius:50px;          /* píldora */
+    gap:.65rem;
+    font-size:.72rem;
+    box-shadow:0 6px 24px rgba(37,211,102,.35);
+    animation:wap 3s infinite;   /* mantener pulso sutil */
+    white-space:nowrap
   }
-  .wa-btn svg{width:24px;height:24px}
-  .wa-txt{font-size:.78rem;letter-spacing:.1em;font-weight:500}
+  .wa-btn svg{width:18px;height:18px}
+  .wa-txt{font-size:.7rem;letter-spacing:.06em}
 }
