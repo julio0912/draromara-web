@@ -149,7 +149,7 @@ document.querySelectorAll('.faq-item').forEach(item => {
    4. Reemplaza el valor de API_URL abajo
    5. Sube el archivo y listo
 ══════════════════════════════════════════════════════════ */
-const API_URL = 'https://sheetdb.io/api/v1/8p12fly6vq1si'; // ← reemplaza con tu URL
+const API_URL = 'https://sheetdb.io/api/v1/8p12fly6vq1si; // ← reemplaza con tu URL
 const CACHE_KEY    = 'romara_servicios_v2'; // v2 para limpiar caché anterior
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutos
 
