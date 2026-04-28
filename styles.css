@@ -199,7 +199,7 @@ nav.scrolled{padding:1rem clamp(1.2rem,5vw,4rem);
 
 /* ── Marquee ── */
 .mq-band{background:var(--dorado);padding:.75rem 0;overflow:hidden;display:flex}
-.mq-track{display:flex;animation:ms 40s linear infinite;white-space:nowrap}
+.mq-track{display:flex;animation:ms 60s linear infinite;white-space:nowrap}
 .mq-band:hover .mq-track{animation-play-state:paused}
 .mq-item{display:flex;align-items:center;gap:2rem;padding:0 2rem;
   font-size:.62rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--negro)}
