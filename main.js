@@ -149,238 +149,247 @@ document.querySelectorAll('.faq-item').forEach(item => {
    4. Reemplaza el valor de API_URL abajo
    5. Sube el archivo y listo
 ══════════════════════════════════════════════════════════ */
-const API_URL = 'https://sheetdb.io/api/v1/8p12fly6vq1si'; // ← URL de SheetDB
-const CACHE_KEY    = 'romara_servicios_v2'; // v2 para limpiar caché anterior
-const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutos
+/* ══════════════════════════════════════════════════════════
+   SERVICIOS — datos hardcodeados
+   ─────────────────────────────────────────────────────────
+   Para editar: cambia los valores directamente aquí.
+   
+   Campos de cada servicio:
+     nombre    → nombre visible en la página
+     cat       → categoría (debe coincidir con CAT_ORDER)
+     desc      → descripción corta
+     pe        → precio en efectivo (número)
+     pr        → precio regular con tarjeta (número, 0 si igual)
+     dur       → duración del procedimiento
+     efecto    → duración del efecto
+     rec       → tiempo de recuperación
+     anest     → tipo de anestesia
+     promo     → true/false → aparece en sección Promociones
+     destacado → true/false → aparece primero en su categoría
+     txtPromo  → badge: "Alta demanda" / "Promo del mes" / etc
+     orden     → número para ordenar dentro de su categoría
+══════════════════════════════════════════════════════════ */
 
-/* ── Parseo de precios ── */
-// Maneja: "$6,000" / "$6.000" / "6000" / 6000
-function parsePrecio(val) {
-  if (val === null || val === undefined || val === '') return 0;
-  if (typeof val === 'number') return val;
-  let s = String(val).trim().replace(/[$\s]/g, '');
-  s = s.replace(/[.,](?=\d{3}(?:[.,]|$))/g, '');
-  s = s.replace(',', '.');
-  const n = parseFloat(s);
-  return isNaN(n) ? 0 : n;
-}
+const SERVICIOS = [
 
-// Formatea número a "$6,000" o "Consultar" si es 0
-const fmt = n => {
-  const num = parsePrecio(n);
-  return num > 0
-    ? '$' + num.toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
-    : 'Consultar';
-};
+  /* ── LABIOS Y FILLERS ── */
+  {
+    nombre: 'Aumento de Labios con Ácido Hialurónico',
+    cat: 'Labios y Fillers',
+    desc: 'Hidrata, define y voluminiza los labios con resultado discreto y natural. Tratamiento estrella de Romara.',
+    pe: 6000, pr: 7200,
+    dur: '20 min aprox', efecto: '6 a 12 meses', rec: 'No aplica', anest: 'Tópica',
+    promo: true, destacado: true, txtPromo: '🔥 Alta demanda', orden: 1
+  },
+  {
+    nombre: 'Russian Lips',
+    cat: 'Labios y Fillers',
+    desc: 'Técnica estrella de Romara Aesthetics. Mayor definición y volumen que técnicas convencionales.',
+    pe: 6000, pr: 7200,
+    dur: '20 min aprox', efecto: '9 a 12 meses', rec: 'No aplica', anest: 'Tópica',
+    promo: true, destacado: true, txtPromo: '⚡ Promo del mes', orden: 2
+  },
+  {
+    nombre: 'Nefertiti Lips',
+    cat: 'Labios y Fillers',
+    desc: 'Técnica NUEVA Y EXCLUSIVA de Romara. Labios voluminosos con definición sutil. Combina relleno y toxina.',
+    pe: 6500, pr: 7800,
+    dur: '30 min aprox', efecto: '6 a 12 meses', rec: '3 a 5 días', anest: 'Tópica',
+    promo: true, destacado: true, txtPromo: '🔥 Últimos lugares', orden: 3
+  },
+  {
+    nombre: 'Rellenos con Ácido Hialurónico — Fillers Faciales',
+    cat: 'Labios y Fillers',
+    desc: 'Definen, hidratan, rejuvenecen y reposicionan diferentes zonas del rostro según las necesidades de cada paciente.',
+    pe: 6000, pr: 7200,
+    dur: '20 min aprox', efecto: '6 a 12 meses', rec: '2 a 3 días', anest: 'Tópica',
+    promo: true, destacado: false, txtPromo: '', orden: 4
+  },
+  {
+    nombre: 'Relleno de Ojeras con Ácido Hialurónico',
+    cat: 'Labios y Fillers',
+    desc: 'Disimula y minimiza el hundimiento de la zona. Logra mirada fresca y aspecto juvenil.',
+    pe: 6000, pr: 7200,
+    dur: '20 min aprox', efecto: '6 a 9 meses', rec: '2 a 3 días', anest: 'Tópica',
+    promo: true, destacado: false, txtPromo: '', orden: 5
+  },
 
-// Convierte "Sí" / "Si" / "SI" / "TRUE" / "1" → true
-const esSi = v => /^(sí|si|yes|true|1)$/i.test(String(v || '').trim());
+  /* ── CONTORNO FACIAL ── */
+  {
+    nombre: 'Rinomodelación con Ácido Hialurónico',
+    cat: 'Contorno Facial',
+    desc: 'Mejora el aspecto de la nariz sin cirugía. Alternativa no invasiva para mejorar el perfil y la armonía facial.',
+    pe: 6500, pr: 7800,
+    dur: '20 min aprox', efecto: '6 a 12 meses', rec: '2 a 3 días', anest: 'Tópica',
+    promo: true, destacado: false, txtPromo: '⚡ Precio especial', orden: 1
+  },
+  {
+    nombre: 'Bichectomía con Ácido Hialurónico',
+    cat: 'Contorno Facial',
+    desc: 'Reduce el volumen de las mejillas para un rostro más definido y estilizado, sin cirugía.',
+    pe: 7000, pr: 8500,
+    dur: '30 min aprox', efecto: 'Permanente', rec: '5 a 7 días', anest: 'Local',
+    promo: false, destacado: false, txtPromo: '', orden: 2
+  },
+  {
+    nombre: 'Mentón y Mandíbula',
+    cat: 'Contorno Facial',
+    desc: 'Define y proyecta el mentón y la mandíbula para un perfil más armonioso y estructurado.',
+    pe: 6500, pr: 7800,
+    dur: '20 min aprox', efecto: '12 a 18 meses', rec: '2 a 3 días', anest: 'Tópica',
+    promo: false, destacado: false, txtPromo: '', orden: 3
+  },
+  {
+    nombre: 'Armonización Facial',
+    cat: 'Contorno Facial',
+    desc: 'Tratamiento integral que combina diferentes técnicas para equilibrar y realzar los rasgos del rostro de forma natural.',
+    pe: 12000, pr: 15000,
+    dur: '60 min aprox', efecto: '6 a 12 meses', rec: '3 a 5 días', anest: 'Tópica',
+    promo: false, destacado: false, txtPromo: '', orden: 4
+  },
 
-/* ── Normaliza una fila cruda de SheetDB al modelo interno ── */
-function normalize(raw) {
-  const pe = parsePrecio(raw.precio_efectivo);
-  const pr = parsePrecio(raw.precio_regular);
+  /* ── TOXINAS ── */
+  {
+    nombre: 'Toxina Botulínica — Botox',
+    cat: 'Toxinas',
+    desc: 'Relaja los músculos de expresión para suavizar líneas y arrugas. Resultado natural y preventivo.',
+    pe: 5500, pr: 6500,
+    dur: '20 min aprox', efecto: '3 a 6 meses', rec: 'No aplica', anest: 'No aplica',
+    promo: true, destacado: false, txtPromo: '🔥 Alta demanda', orden: 1
+  },
+  {
+    nombre: 'Tratamiento para Bruxismo con Toxina Botulínica',
+    cat: 'Toxinas',
+    desc: 'Relaja el músculo masetero para reducir el bruxismo y afinar el óvalo facial como beneficio estético.',
+    pe: 6000, pr: 7200,
+    dur: '20 min aprox', efecto: '4 a 6 meses', rec: 'No aplica', anest: 'No aplica',
+    promo: true, destacado: false, txtPromo: '', orden: 2
+  },
+  {
+    nombre: 'Perfilado de Cejas con Toxina Botulínica',
+    cat: 'Toxinas',
+    desc: 'Eleva y arquea las cejas con toxina para una mirada más abierta y expresiva sin cirugía.',
+    pe: 4500, pr: 5500,
+    dur: '15 min aprox', efecto: '3 a 4 meses', rec: 'No aplica', anest: 'No aplica',
+    promo: false, destacado: false, txtPromo: '', orden: 3
+  },
+  {
+    nombre: 'Toxina Botulínica — Cuello (Nefertiti Lift)',
+    cat: 'Toxinas',
+    desc: 'Levanta y define el cuello y el óvalo facial con toxina botulínica. Efecto lifting sin cirugía.',
+    pe: 6000, pr: 7200,
+    dur: '20 min aprox', efecto: '3 a 4 meses', rec: 'No aplica', anest: 'No aplica',
+    promo: false, destacado: false, txtPromo: '', orden: 4
+  },
 
-  // Aviso si el precio llegó en formato inesperado
-  if (pe === 0 && raw.precio_efectivo &&
-      String(raw.precio_efectivo).trim() !== '' &&
-      String(raw.precio_efectivo).trim() !== '0') {
-    console.warn('[Romara] precio_efectivo no parseado:', JSON.stringify(raw.precio_efectivo));
-  }
+  /* ── BIOESTIMULACIÓN ── */
+  {
+    nombre: 'Bioestimulador de Colágeno — Sculptra / Radiesse',
+    cat: 'Bioestimulación',
+    desc: 'Estimula la producción natural de colágeno para recuperar volumen y firmeza de forma progresiva.',
+    pe: 9500, pr: 11500,
+    dur: '30 min aprox', efecto: 'Hasta 2 años', rec: '3 a 5 días', anest: 'Tópica',
+    promo: false, destacado: false, txtPromo: '', orden: 1
+  },
+  {
+    nombre: 'Matrix — Biorevitalización',
+    cat: 'Bioestimulación',
+    desc: 'Mejora la calidad, hidratación y luminosidad de la piel desde adentro. Ideal para piel apagada o deshidratada.',
+    pe: 4500, pr: 5500,
+    dur: '30 min aprox', efecto: '4 a 6 meses', rec: '2 a 3 días', anest: 'Tópica',
+    promo: false, destacado: false, txtPromo: '', orden: 2
+  },
 
-  return {
-    nombre    : (raw.nombre_del_servicio    || '').trim(),
-    cat       : (raw.categoria              || '').trim(),
-    desc      : (raw.descripcion            || '').trim(),
-    pe, pr,
-    dur       : (raw.duracion_procedimiento || '').trim(),
-    rec       : (raw.recuperacion           || '').trim(),
-    efecto    : (raw.efecto_duracion        || '').trim(),
-    anest     : (raw.anestesia              || '').trim(),
-    activo    : esSi(raw.activo_si_no),
-    promo     : esSi(raw.promocion_si_no),
-    destacado : esSi(raw.destacado),
-    txtPromo  : (raw.texto_promo            || '').trim(),
-    orden     : parseInt(raw.orden, 10) || 99,
-  };
-}
+  /* ── ENZIMAS ── */
+  {
+    nombre: 'Enzimas — Mesoterapia Facial',
+    cat: 'Enzimas',
+    desc: 'Tratamiento inyectable que hidrata, nutre y revitaliza la piel. Ideal para mejorar textura y tono.',
+    pe: 3500, pr: 4200,
+    dur: '20 min aprox', efecto: '3 a 4 meses', rec: '1 a 2 días', anest: 'Tópica',
+    promo: false, destacado: false, txtPromo: '', orden: 1
+  },
+  {
+    nombre: 'Enzimas — Papada',
+    cat: 'Enzimas',
+    desc: 'Reduce la grasa localizada en la papada de forma no quirúrgica mediante inyección de enzimas lipolíticas.',
+    pe: 4500, pr: 5500,
+    dur: '20 min aprox', efecto: 'Permanente', rec: '3 a 5 días', anest: 'Tópica',
+    promo: false, destacado: false, txtPromo: '', orden: 2
+  },
+  {
+    nombre: 'Enzimas — Corporal',
+    cat: 'Enzimas',
+    desc: 'Aplicación de enzimas en zonas con grasa localizada para reducir medidas sin cirugía.',
+    pe: 4000, pr: 5000,
+    dur: '30 min aprox', efecto: 'Permanente', rec: '2 a 4 días', anest: 'Tópica',
+    promo: false, destacado: false, txtPromo: '', orden: 3
+  },
 
-/* ── Validación de caché ── */
-function validateCache(data) {
-  if (!Array.isArray(data) || data.length === 0) return false;
-  // Si todos los precios son 0, probablemente es caché corrupta
-  if (!data.some(s => s.pe > 0)) {
-    console.warn('[Romara] Caché corrupta (todos los precios = 0). Limpiando...');
-    localStorage.removeItem(CACHE_KEY);
-    return false;
-  }
-  return true;
-}
-
-/* ── Caché con TTL ── */
-function cacheGet() {
-  try {
-    const raw = localStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    const { ts, data } = JSON.parse(raw);
-    if (Date.now() - ts > CACHE_TTL_MS) { localStorage.removeItem(CACHE_KEY); return null; }
-    if (!validateCache(data)) return null;
-    return data;
-  } catch { return null; }
-}
-function cacheSet(data) {
-  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); } catch {}
-}
-
-/* ── Estados de carga en UI ── */
-function showGridLoading() {
-  document.getElementById('srvGrid').innerHTML = `
-    <div class="loading-sk" style="padding:4rem 2rem;flex-direction:column;gap:.8rem">
-      <div style="width:32px;height:32px;border:1px solid rgba(201,169,110,.3);
-        border-top-color:var(--dorado);border-radius:50%;animation:spin .9s linear infinite"></div>
-      <span style="font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gris)">
-        Cargando tratamientos…
-      </span>
-    </div>`;
-}
-function showGridError(msg) {
-  document.getElementById('srvGrid').innerHTML = `
-    <div style="text-align:center;padding:4rem 2rem">
-      <p style="font-size:.82rem;color:var(--gris);line-height:1.8;max-width:360px;margin:0 auto 1.5rem">${msg}</p>
-      <a href="https://wa.me/523334043771" target="_blank" class="btn-p" style="display:inline-flex">
-        <span>Consultar por WhatsApp</span><span class="arr">→</span>
-      </a>
-    </div>`;
-}
-
-/* ── Spinner CSS ── */
-(function() {
-  if (document.getElementById('spin-css')) return;
-  const s = document.createElement('style');
-  s.id = 'spin-css';
-  s.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
-  document.head.appendChild(s);
-})();
-
-/* ── Fetch de datos con caché ── */
-async function loadData() {
-  // 1. Intenta caché primero (evita request innecesario)
-  const cached = cacheGet();
-  if (cached) {
-    console.info('[Romara] Datos desde caché (%d servicios)', cached.length);
-    return cached;
-  }
-
-  // 2. Llama a la API
-  try {
-    const res = await fetch(API_URL, {
-      method: 'GET',
-      headers: { 'Accept': 'application/json' }
-    });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-    const json = await res.json();
-    if (!Array.isArray(json) || json.length === 0) throw new Error('API devolvió lista vacía');
-
-    // Normaliza y filtra solo los activos
-    const data = json
-      .map(normalize)
-      .filter(s => s.activo && s.nombre);
-
-    cacheSet(data);
-    console.info('[Romara] Datos desde API (%d servicios activos)', data.length);
-    return data;
-
-  } catch (err) {
-    console.warn('[Romara] API no disponible:', err.message);
-
-    // Fallback: usar caché aunque esté vencida
-    // (mejor dato viejo que página rota)
-    try {
-      const raw = localStorage.getItem(CACHE_KEY);
-      if (raw) {
-        const { data } = JSON.parse(raw);
-        if (Array.isArray(data) && data.length > 0) {
-          console.info('[Romara] Usando caché vencida como fallback');
-          return data;
-        }
-      }
-    } catch {}
-
-    return null; // Sin datos disponibles
-  }
-}
+];
 
 /* ══════════════════════════════════════════════════════════
-   ORDENAMIENTO
-   Regla: destacado primero → orden ascendente → nombre
-   Categorías fijas: Labios primero
+   UTILIDADES
 ══════════════════════════════════════════════════════════ */
+
+// Formatea número a "$6,000"
+const fmt = n =>
+  n > 0
+    ? '$' + Number(n).toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 0 })
+    : 'Consultar';
+
+// Mensaje WhatsApp personalizado
+const waMsg = nombre =>
+  encodeURIComponent(
+    `Hola, me interesa el servicio de ${nombre} en Romara Aesthetics. ¿Cuál es su disponibilidad esta semana?`
+  );
+
+// Badges por defecto si txtPromo está vacío
+const BADGES = ['🔥 Alta demanda','⚡ Promo del mes','🔥 Últimos lugares','⚡ Precio especial'];
+const getBadge = (s, i) => s.txtPromo || BADGES[i % BADGES.length];
+
+/* ── Orden de categorías ── */
 const CAT_ORDER = ['Labios y Fillers','Contorno Facial','Toxinas','Bioestimulación','Enzimas'];
 
 function sortData(data) {
   return [...data].sort((a, b) => {
-    // 1. Orden de categoría
     const ai = CAT_ORDER.indexOf(a.cat), bi = CAT_ORDER.indexOf(b.cat);
-    const catA = ai === -1 ? 99 : ai, catB = bi === -1 ? 99 : bi;
-    if (catA !== catB) return catA - catB;
-
-    // 2. Destacados primero dentro de su categoría
+    const ca = ai === -1 ? 99 : ai, cb = bi === -1 ? 99 : bi;
+    if (ca !== cb) return ca - cb;
     if (a.destacado !== b.destacado) return a.destacado ? -1 : 1;
-
-    // 3. Por número de orden
     if (a.orden !== b.orden) return a.orden - b.orden;
-
-    // 4. Alfabético como desempate
     return a.nombre.localeCompare(b.nombre, 'es');
   });
-}
-
-/* ── Mensaje de WhatsApp personalizado por servicio ── */
-function waMsg(nombre) {
-  return encodeURIComponent(
-    `Hola, me interesa el servicio de ${nombre} en Romara Aesthetics. ¿Cuál es su disponibilidad esta semana?`
-  );
-}
-
-/* ── Badges de urgencia (usa texto_promo del Sheet si existe) ── */
-const BADGES_DEFAULT = ['🔥 Alta demanda','⚡ Promo del mes','🔥 Últimos lugares','⚡ Precio especial'];
-function getBadge(s, idx) {
-  return s.txtPromo || BADGES_DEFAULT[idx % BADGES_DEFAULT.length];
 }
 
 /* ══════════════════════════════════════════════════════════
    RENDER — ACORDEÓN DE SERVICIOS
 ══════════════════════════════════════════════════════════ */
 function renderAcordeon(data, cat = 'todos') {
-  const grid = document.getElementById('srvGrid');
+  const grid   = document.getElementById('srvGrid');
   const filtered = cat === 'todos' ? data : data.filter(s => s.cat === cat);
   const sorted   = sortData(filtered);
 
   if (!sorted.length) {
     grid.innerHTML = `<div style="padding:3rem 2rem;text-align:center;color:var(--gris);font-size:.85rem">
-      Sin servicios en esta categoría por el momento.</div>`;
+      Sin servicios en esta categoría.</div>`;
     return;
   }
 
+  const SKIP = ['Variable','No aplica','—',''];
+
   grid.innerHTML = sorted.map((s, i) => {
     const esLabios = s.cat === 'Labios y Fillers';
-
-    // Solo muestra metadatos que tienen valor real
     const metaItems = [
-      s.dur    && !['Variable','No aplica','—',''].includes(s.dur)
-        ? `<div class="srv-pm-item"><div class="srv-pm-label">Duración</div><div class="srv-pm-val">${s.dur}</div></div>` : '',
-      s.efecto && !['No aplica','—',''].includes(s.efecto)
-        ? `<div class="srv-pm-item"><div class="srv-pm-label">Efecto</div><div class="srv-pm-val">${s.efecto}</div></div>` : '',
-      s.rec    && !['No aplica','—',''].includes(s.rec)
-        ? `<div class="srv-pm-item"><div class="srv-pm-label">Recuperación</div><div class="srv-pm-val">${s.rec}</div></div>` : '',
-      s.anest  && !['No aplica','—',''].includes(s.anest)
-        ? `<div class="srv-pm-item"><div class="srv-pm-label">Anestesia</div><div class="srv-pm-val">${s.anest}</div></div>` : '',
+      s.dur    && !SKIP.includes(s.dur)    ? `<div class="srv-pm-item"><div class="srv-pm-label">Duración</div><div class="srv-pm-val">${s.dur}</div></div>`    : '',
+      s.efecto && !SKIP.includes(s.efecto) ? `<div class="srv-pm-item"><div class="srv-pm-label">Efecto</div><div class="srv-pm-val">${s.efecto}</div></div>`    : '',
+      s.rec    && !SKIP.includes(s.rec)    ? `<div class="srv-pm-item"><div class="srv-pm-label">Recuperación</div><div class="srv-pm-val">${s.rec}</div></div>` : '',
+      s.anest  && !SKIP.includes(s.anest)  ? `<div class="srv-pm-item"><div class="srv-pm-label">Anestesia</div><div class="srv-pm-val">${s.anest}</div></div>`  : '',
     ].filter(Boolean).join('');
 
     return `
     <div class="srv-row${esLabios ? ' srv-row--labios' : ''}${s.destacado ? ' srv-row--dest' : ''}"
-      style="opacity:0;transform:translateY(10px);transition:opacity .4s ${i * .03}s,transform .4s ${i * .03}s">
+      style="opacity:0;transform:translateY(10px);transition:opacity .4s ${i*.03}s,transform .4s ${i*.03}s">
       <div class="srv-row-head">
         <div class="srv-row-head-left">
           <span class="srv-row-cat">${s.cat}</span>
@@ -403,7 +412,7 @@ function renderAcordeon(data, cat = 'todos') {
             <div class="srv-panel-precio-wrap">
               ${s.promo ? '<div class="srv-panel-plabel">Precio efectivo</div>' : ''}
               <div class="srv-panel-precio">${fmt(s.pe)}</div>
-              ${(s.pr && s.pr > s.pe) ? `<div class="srv-panel-preg">${fmt(s.pr)} regular</div>` : ''}
+              ${s.pr > s.pe ? `<div class="srv-panel-preg">${fmt(s.pr)} regular</div>` : ''}
             </div>
             <a href="https://wa.me/523334043771?text=${waMsg(s.nombre)}"
               target="_blank" class="btn-p"
@@ -416,14 +425,12 @@ function renderAcordeon(data, cat = 'todos') {
     </div>`;
   }).join('');
 
-  // Animar entrada
   requestAnimationFrame(() => {
-    document.querySelectorAll('.srv-row').forEach((el, i) => {
-      setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }, i * 30);
-    });
+    document.querySelectorAll('.srv-row').forEach((el, i) =>
+      setTimeout(() => { el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }, i * 30)
+    );
   });
 
-  // Acordeón click
   grid.querySelectorAll('.srv-row-head').forEach(head => {
     head.addEventListener('click', () => {
       const row    = head.closest('.srv-row');
@@ -435,7 +442,7 @@ function renderAcordeon(data, cat = 'todos') {
   });
 }
 
-/* ── Render tabs de categoría ── */
+/* ── Render tabs ── */
 function renderTabs(data) {
   const catsFromData  = [...new Set(data.map(s => s.cat).filter(Boolean))];
   const orderedCats   = CAT_ORDER.filter(c => catsFromData.includes(c));
@@ -458,9 +465,8 @@ function renderTabs(data) {
   });
 }
 
-/* ── Render sección de promociones ── */
+/* ── Render promociones ── */
 function renderPromos(data) {
-  // Solo promos activas, labios primero, máximo 6
   const promos = sortData(data.filter(s => s.promo && s.pe > 0)).slice(0, 6);
   const g      = document.getElementById('promoGrid');
 
@@ -477,7 +483,7 @@ function renderPromos(data) {
       <p class="promo-desc">${s.desc.length > 85 ? s.desc.substring(0, 85) + '…' : s.desc}</p>
       <div class="promo-sav">
         <div class="promo-pe">${fmt(s.pe)}</div>
-        ${(s.pr && s.pr > s.pe) ? `<div class="promo-pr">${fmt(s.pr)}</div>` : ''}
+        ${s.pr > s.pe ? `<div class="promo-pr">${fmt(s.pr)}</div>` : ''}
       </div>
       <a href="https://wa.me/523334043771?text=${waMsg(s.nombre)}"
         target="_blank" class="promo-cta-link">
@@ -490,24 +496,12 @@ function renderPromos(data) {
 }
 
 /* ══════════════════════════════════════════════════════════
-   INIT — orquesta todo con un solo fetch
+   INIT — sin API, datos directos
 ══════════════════════════════════════════════════════════ */
-(async () => {
-  showGridLoading();
-  const data = await loadData();
-
-  if (!data) {
-    showGridError('No pudimos cargar los servicios.<br>Escríbenos directamente y te asesoramos.');
-    document.getElementById('promoGrid').innerHTML = `
-      <div style="text-align:center;padding:2rem;color:var(--gris);font-size:.82rem;grid-column:1/-1">
-        Escríbenos por WhatsApp para conocer las promociones actuales.
-      </div>`;
-    return;
-  }
-
-  renderTabs(data);
-  renderAcordeon(data);
-  renderPromos(data);
+(function init() {
+  renderTabs(SERVICIOS);
+  renderAcordeon(SERVICIOS);
+  renderPromos(SERVICIOS);
 })();
 
 /* ── Smooth scroll ── */
