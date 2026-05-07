@@ -136,38 +136,6 @@ document.querySelectorAll('.faq-item').forEach(item => {
   });
 })();
 
-/* ══════════════════════════════════════════════════════════
-   DATA LAYER
-   ─────────────────────────────────────────────────────────
-   IMPORTANTE: Para cambiar la API, solo edita API_URL.
-   El resto del código se adapta automáticamente.
-   
-   Cómo conectar tu SheetDB:
-   1. Crea tu Google Sheet con las columnas del template
-   2. Entra a sheetdb.io → Create API → pega la URL del Sheet
-   3. Copia la URL de la API (ej: https://sheetdb.io/api/v1/XXXXXXXX)
-   4. Reemplaza el valor de API_URL abajo
-   5. Sube el archivo y listo
-══════════════════════════════════════════════════════════ */
-/* ══════════════════════════════════════════════════════════
-   SERVICIOS — datos hardcodeados
-   ─────────────────────────────────────────────────────────
-   Para editar: cambia los valores directamente aquí.
-   
-   Campos de cada servicio:
-     nombre    → nombre visible en la página
-     cat       → categoría (debe coincidir con CAT_ORDER)
-     desc      → descripción corta
-     pe        → precio en efectivo (número)
-     pr        → precio regular con tarjeta (número, 0 si igual)
-     dur       → duración del procedimiento
-     efecto    → duración del efecto
-     rec       → tiempo de recuperación
-     anest     → tipo de anestesia
-     promo     → true/false → aparece en sección Promociones
-     destacado → true/false → aparece primero en su categoría
-     txtPromo  → badge: "Alta demanda" / "Promo del mes" / etc
-     orden     → número para ordenar dentro de su categoría
 ══════════════════════════════════════════════════════════ */
 
 const SERVICIOS = [
